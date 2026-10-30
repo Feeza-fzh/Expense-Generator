@@ -1,0 +1,26 @@
+# Environment variables (Rule N-27: .env is in .gitignore)
+.env
+.env*.local
+
+# Dependencies
+node_modules/
+
+# Production builds
+.next/
+dist/
+out/
+*.tsbuildinfo
+
+# Logs and databases
+*.log
+npm-debug.log*
+data/
+
+# IDE / Editor
+.idea/
+.DS_Store
+Thumbs.db
+
+# Vitest coverage
+coverage/
+

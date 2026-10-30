@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum JobType {
+  EXTRACT
+  SUMMARISE
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
+enum ReceiptStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
+enum SummaryStatus {
+  NOT_REQUESTED
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
+enum Category {
+  MEALS
+  TRAVEL
+  LODGING
+  SOFTWARE
+  OFFICE
+  UTILITIES
+  FUEL
+  MEDICAL
+  OTHER
+  UNKNOWN
+}
+
+enum Legibility {
+  CLEAR
+  PARTIAL
+  POOR
+}
+
+enum ErrorCode {
+  UNSUPPORTED_TYPE
+  FILE_TOO_LARGE
+  EMPTY_FILE
+  UNREADABLE_FILE
+  NOT_A_RECEIPT
+  PROVIDER_TIMEOUT
+  PROVIDER_UNAVAILABLE
+  INVALID_MODEL_OUTPUT
+  INTERNAL_ERROR
+}
+
+model User {
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+  lastSeenAt DateTime  @default(now())
+  batches    Batch[]
+  receipts   Receipt[]
+}
+
+model Batch {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipHash    String    // salted hash, never the raw IP
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  receipts  Receipt[]
+  jobs      Job[]
+  report    Report?
+
+  @@index([userId, createdAt])
+  @@index([ipHash, createdAt])
+  @@index([expiresAt])
+}
+
+model Receipt {
+  id                   String        @id @default(cuid())
+  batchId              String
+  batch                Batch         @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  userId               String
+  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status               ReceiptStatus @default(PENDING)
+  errorCode            ErrorCode?
+  originalFilename     String
+  storageKey           String?       // R2 key. Null if rejected before storage
+  fileSha256           String?
+  mimeType             String?
+  sizeBytes            Int?
+  pageCount            Int?
+  merchant             String?
+  merchantNormalized   String?
+  purchaseDate         DateTime?     @db.Date
+  dateRaw              String?
+  dateAmbiguous        Boolean       @default(false)
+  currency             String?       @db.VarChar(3)
+  subtotalMinor        Int?
+  taxMinor             Int?
+  tipMinor             Int?
+  totalMinor           Int?
+  pricesIncludeTax     Boolean?
+  paymentMethod        String?
+  category             Category?
+  legibility           Legibility?
+  receiptCountDetected Int?
+  languageCode         String?
+  flags                Json          @default("[]")
+  rawModelOutput       Json?
+  modelId              String?
+  promptVersion        String?
+  createdAt            DateTime      @default(now())
+  expiresAt            DateTime
+  lineItems            LineItem[]
+  jobs                 Job[]
+
+  @@index([userId, fileSha256])
+  @@index([userId, merchantNormalized, purchaseDate, totalMinor])
+  @@index([batchId, status])
+  @@index([expiresAt])
+}
+
+model LineItem {
+  id          String   @id @default(cuid())
+  receiptId   String
+  receipt     Receipt  @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  position    Int
+  description String
+  quantity    Decimal? @db.Decimal(12, 3)
+  amountMinor Int?     // may be negative for a discount
+
+  @@index([receiptId, position])
+}
+
+model Job {
+  id                  String     @id @default(cuid())
+  type                JobType
+  status              JobStatus  @default(PENDING)
+  receiptId           String?    // set for EXTRACT jobs
+  receipt             Receipt?   @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  batchId             String?    // set for EXTRACT and SUMMARISE jobs
+  batch               Batch?     @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  attempts            Int        @default(0)
+  maxAttempts         Int        @default(3)
+  lockedAt            DateTime?
+  lockedBy            String?
+  nextRunAt           DateTime   @default(now())
+  errorCode           ErrorCode?
+  errorMessage        String?
+  inputTokens         Int?
+  outputTokens        Int?
+  estimatedCostMicros Int?       // millionths of a US dollar, used for the daily spend cap
+  createdAt           DateTime   @default(now())
+  startedAt           DateTime?
+  finishedAt          DateTime?
+
+  @@index([status, nextRunAt])
+  @@index([batchId, type])
+  @@index([finishedAt])
+}
+
+model Report {
+  id                   String        @id @default(cuid())
+  batchId              String        @unique
+  batch                Batch         @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  includedCount        Int
+  totalCount           Int
+  totals               Json          // see Section 6.8
+  summary              Json?         // validated SummariserOutput
+  summaryStatus        SummaryStatus @default(NOT_REQUESTED)
+  summaryModelId       String?
+  summaryPromptVersion String?
+  generatedAt          DateTime      @default(now())
+
+  @@index([generatedAt])
+}
+
+model RateLimitHit {
+  id        String   @id @default(cuid())
+  key       String   // for example "batch:cookie:<userId>" or "batch:ip:<ipHash>"
+  createdAt DateTime @default(now())
+
+  @@index([key, createdAt])
+}
+

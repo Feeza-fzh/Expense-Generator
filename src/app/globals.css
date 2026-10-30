@@ -1,0 +1,23 @@
+@import '../../design-tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: var(--color-surface, #fbf6fe);
+  color: var(--color-on-surface, #120f14);
+  font-family: var(--font-body-large-family, 'DM Sans', sans-serif);
+  margin: 0;
+  padding: 0;
+}
+
+.heading-small {
+  font: var(--font-heading-small);
+  letter-spacing: var(--font-heading-small-letter-spacing);
+}
+
+.heading-medium {
+  font: var(--font-heading-medium);
+  letter-spacing: var(--font-heading-medium-letter-spacing);
+}
