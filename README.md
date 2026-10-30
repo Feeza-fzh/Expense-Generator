@@ -1,7 +1,3 @@
-# Receipt to Expense Report
-
-Cloudflare R2 implements Amazon's S3 API, allowing the official AWS S3 client to interact directly with R2 private buckets without requiring an AWS account or incurring AWS charges.
-
 ## Overview
 A web application slice that turns raw receipts into an organized expense report grouped by currency and category, with complete audit traceability back to source receipts.
 
