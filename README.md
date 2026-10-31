@@ -4,8 +4,8 @@ A web application slice that turns raw receipts into an organized expense report
 ## Architecture
 - **Web App**: Next.js (App Router), TypeScript, Tailwind CSS
 - **Database & Queue**: PostgreSQL with Prisma and a separate long-lived Node worker
-- **Storage**: Cloudflare R2 (or MinIO for local development) via `@aws-sdk/client-s3`
-- **AI Processing**: Google Gemini API via official `@google/genai` SDK
+- **Storage**: Cloudflare R2 
+- **AI Processing**: Google Gemini API 
 
 ## Local Development
 1. Start PostgreSQL and MinIO:
