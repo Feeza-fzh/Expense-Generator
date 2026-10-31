@@ -1,15 +1,11 @@
-# Receipt to Expense Report
-
-Cloudflare R2 implements Amazon's S3 API, allowing the official AWS S3 client to interact directly with R2 private buckets without requiring an AWS account or incurring AWS charges.
-
 ## Overview
 A web application slice that turns raw receipts into an organized expense report grouped by currency and category, with complete audit traceability back to source receipts.
 
 ## Architecture
 - **Web App**: Next.js (App Router), TypeScript, Tailwind CSS
 - **Database & Queue**: PostgreSQL with Prisma and a separate long-lived Node worker
-- **Storage**: Cloudflare R2 (or MinIO for local development) via `@aws-sdk/client-s3`
-- **AI Processing**: Google Gemini API via official `@google/genai` SDK
+- **Storage**: Cloudflare R2 
+- **AI Processing**: Google Gemini API 
 
 ## Local Development
 1. Start PostgreSQL and MinIO:
