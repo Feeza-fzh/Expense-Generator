@@ -55,6 +55,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         { status: err.statusCode }
       );
     }
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    console.error('[API /api/batches error]:', message);
     return NextResponse.json(
       { errorCode: 'INTERNAL_ERROR', message: 'An unexpected error occurred.' },
       { status: 500 }

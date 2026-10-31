@@ -1,13 +1,13 @@
 export const appConfig = {
   extractor: {
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.5-flash',
     temperature: 0,
     maxOutputTokens: 2048,
     timeoutMs: 30000,
     promptVersion: 'extractor.v1'
   },
   summariser: {
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.5-flash',
     temperature: 0.2,
     maxOutputTokens: 1024,
     timeoutMs: 30000,
@@ -52,6 +52,10 @@ export const appConfig = {
   },
   pricing: {
     // Model pricing per million tokens in USD
+    'gemini-3.5-flash': {
+      inputPerMTok: 0.075,
+      outputPerMTok: 0.3
+    },
     'gemini-2.5-flash': {
       inputPerMTok: 0.075,
       outputPerMTok: 0.3

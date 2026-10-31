@@ -49,7 +49,7 @@ class S3StorageAdapter implements StorageAdapter {
     } catch (err) {
       logger.error('Failed to upload file to object storage', {
         key,
-        message: err instanceof Error ? err.message : String(err),
+        error: err instanceof Error ? err.message : String(err),
       });
       throw new AppError('INTERNAL_ERROR', 500);
     }

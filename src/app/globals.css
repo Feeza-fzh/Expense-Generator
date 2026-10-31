@@ -12,12 +12,125 @@ body {
   padding: 0;
 }
 
-.heading-small {
-  font: var(--font-heading-small);
-  letter-spacing: var(--font-heading-small-letter-spacing);
+/* ── Typography scales ───────────────────────────────────────────── */
+.heading-large {
+  font: var(--font-heading-large);
+  letter-spacing: var(--font-heading-large-letter-spacing);
 }
-
 .heading-medium {
   font: var(--font-heading-medium);
   letter-spacing: var(--font-heading-medium-letter-spacing);
 }
+.heading-small {
+  font: var(--font-heading-small);
+  letter-spacing: var(--font-heading-small-letter-spacing);
+}
+.title-large {
+  font: var(--font-title-large);
+  letter-spacing: var(--font-title-large-letter-spacing);
+}
+.title-medium {
+  font: var(--font-title-medium);
+  letter-spacing: var(--font-title-medium-letter-spacing);
+}
+.body-medium {
+  font: var(--font-body-medium);
+  letter-spacing: var(--font-body-medium-letter-spacing);
+}
+.body-small {
+  font: var(--font-body-small);
+  letter-spacing: var(--font-body-small-letter-spacing);
+}
+.label-large {
+  font: var(--font-label-large);
+  letter-spacing: var(--font-label-large-letter-spacing);
+}
+.label-medium {
+  font: var(--font-label-medium);
+  letter-spacing: var(--font-label-medium-letter-spacing);
+}
+.label-small {
+  font: var(--font-label-small);
+  letter-spacing: var(--font-label-small-letter-spacing);
+}
+
+/* ── Shadows ─────────────────────────────────────────────────────── */
+.shadow-soft  { box-shadow: var(--shadow-soft); }
+.shadow-medium-token { box-shadow: var(--shadow-medium); }
+.shadow-hard  { box-shadow: var(--shadow-hard); }
+
+/* ── Primary button ──────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font: var(--font-label-large);
+  letter-spacing: var(--font-label-large-letter-spacing);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn-primary:hover:not(:disabled) { opacity: 0.88; }
+.btn-primary:active:not(:disabled) { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── Ghost / outline button ──────────────────────────────────────── */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-on-surface);
+  font: var(--font-label-large);
+  letter-spacing: var(--font-label-large-letter-spacing);
+  border: 1.5px solid color-mix(in srgb, var(--color-on-surface-variant) 30%, transparent);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-ghost:hover { background: var(--color-surface-c-high); border-color: var(--color-on-surface-variant); }
+
+/* ── Card surface ────────────────────────────────────────────────── */
+.card {
+  background: var(--color-surface-c-lowest);
+  border: 1px solid color-mix(in srgb, var(--color-on-surface-variant) 18%, transparent);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+}
+
+/* ── Animated spinner dots ───────────────────────────────────────── */
+.dot-pulse span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: dotPulse 1.4s ease-in-out infinite;
+}
+.dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
+.dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40%           { transform: scale(1);   opacity: 1;   }
+}
+
+/* ── Flag badge colours ──────────────────────────────────────────── */
+.flag-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font: var(--font-label-small);
+  letter-spacing: var(--font-label-small-letter-spacing);
+  white-space: nowrap;
+}
+.flag-badge-warn  { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+.flag-badge-info  { background: var(--color-primary-container); color: var(--color-on-primary-container); border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent); }
+.flag-badge-clean { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
